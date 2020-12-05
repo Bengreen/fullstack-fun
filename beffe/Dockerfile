@@ -20,5 +20,4 @@ RUN npm install --production
 COPY --from=BUILD /home/node/dist/ dist/
 EXPOSE 4000
 
-
-#CMD ["rhhn my code maybe with entrypoint.sh"]
+CMD [ "npm", "run", "server" ]

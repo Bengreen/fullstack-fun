@@ -35,10 +35,12 @@ export default function startGateway(port: number, servers: string, verbose: Boo
   const app = express();
 
   app.get('/alive', (req, res) => {
+    console.log("alive")
     res.json({hello: 'I am alive!'});
   });
 
   app.get('/ready', (req, res) => {
+    console.log("ready")
     res.json({hello: 'I am ready!'});
   });
 

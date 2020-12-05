@@ -16,6 +16,12 @@ ${BEFFENAME}-devshell:
 	docker run -it --env BASE_HREF=${BASE_HREF} ${BEFFENAME}-devshell /bin/bash
 
 
+${BEFFENAME}-run: ${BEFFENAME}-build
+	docker run -it --env BASE_HREF=${BASE_HREF} -p 80:4000 ${BEFFENAME}
+
+${BEFFENAME}-publish: ${BEFFENAME}-build
+	docker tag ${BEFFENAME} ${REGISTRY}/${BEFFENAME}
+	docker push ${REGISTRY}/${BEFFENAME}
 
 
 ${UINAME}-build:

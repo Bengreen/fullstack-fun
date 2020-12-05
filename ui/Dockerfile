@@ -1,4 +1,4 @@
-FROM node as BUILD
+FROM node:14 as BUILD
 
 WORKDIR /home/node
 

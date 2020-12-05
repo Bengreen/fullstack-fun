@@ -1,0 +1,7 @@
+Get the application URL by running these commands:
+{{ range .Values.ingress.hosts -}}
+  {{ .host -}}
+  {{ range .paths }}
+    {{ .path }} = {{ .service }}:{{ .port }}
+  {{- end -}}
+{{- end -}}
