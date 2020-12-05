@@ -1,7 +1,8 @@
 FROM node:15
 
+WORKDIR /home/node
 
-COPY package.json ./
+COPY package.json .
 
 RUN npm install
 
