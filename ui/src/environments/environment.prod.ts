@@ -1,12 +1,16 @@
 const browserWindow = window || {};
-const browserWindowEnv = browserWindow['__env'] || {};
+const envKey = '__env';
 const env: {[name: string]: string} = {};
 
-for (const key in browserWindowEnv) {
-  if (browserWindowEnv.hasOwnProperty(key)) {
-    env[key] = window['__env'][key];
+if (envKey in window) {
+  const browserWindowEnv = window[envKey as keyof typeof window] as Object;
+
+  for (let [key, value] of Object.entries(browserWindowEnv)) {
+    env[key] = value;
   }
 }
+
+
 
 export const environment = {
   production: true,
