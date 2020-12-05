@@ -5,6 +5,7 @@ import yargs from 'yargs';
 import startGateway from './gateway';
 
 yargs
+    .scriptName('beffe-server')
     .usage('$0 <cmd> [args]')
     .command(
         'gateway [port]',
