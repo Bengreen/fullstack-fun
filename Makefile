@@ -1,17 +1,19 @@
 REGISTRY=dockerreg.k8s:5000
 
-simple-build:
-	cd simple; docker build -t simple .
+UINAME=ui
 
-simple-shell: simple-build
-	docker run -it --env BASE_REF=/monkey/poo simple /bin/bash
+${UINAME}-build:
+	cd ui; docker build -t ${UINAME} .
 
-simple-run: simple-build
-	docker run -it --env BASE_REF=/monkey/poo -p 80:80 simple
+${UINAME}-shell: ${UINAME}-build
+	docker run -it --env BASE_REF=/monkey/poo ${UINAME} /bin/bash
 
-simple-publish: simple-build
-	docker tag simple ${REGISTRY}/simple
-	docker push ${REGISTRY}/simple
+${UINAME}-run: ${UINAME}-build
+	docker run -it --env BASE_REF=/monkey/poo -p 80:80 ${UINAME}
+
+${UINAME}-publish: ${UINAME}-build
+	docker tag ${UINAME} ${REGISTRY}/${UINAME}
+	docker push ${REGISTRY}/${UINAME}
 
 install:
-	helm upgrade -i simple helm/simple
+	helm upgrade -i ${UINAME} helm/simple
