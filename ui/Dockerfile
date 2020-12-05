@@ -12,7 +12,7 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx as publish
+FROM nginx as PUBLISH
 
 COPY --from=build /home/node/dist/ui /usr/share/nginx/html
 
