@@ -11,6 +11,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { HomeModule } from './home/home.module';
+import { APP_BASE_HREF } from '@angular/common';
+
+import { environment } from './../environments/environment';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,12 @@ import { HomeModule } from './home/home.module';
     MatListModule,
     HomeModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_BASE_HREF,
+      useValue: environment.baseHref
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
