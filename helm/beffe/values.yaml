@@ -52,7 +52,7 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-gatewayPath: "/monkey/doo"
+gatewayPath: "/monkey/doo/graphql"
 
 autoscaling:
   enabled: false
