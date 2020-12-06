@@ -11,13 +11,22 @@ yargs
         'gateway [port]',
         'start the gateway',
         (yargs) => {
-          yargs.positional('port', {
-            describe: 'port to bind on',
+          yargs
+          .env('GATEWAY')
+          .option('path', {
+            default: 'graphql',
+            describe: 'Path to serve GraphQL'
+          })
+          .option('port', {
+            alias: 'p',
             default: 4000,
-            type: 'number',
+            describe: 'Port for gateway'
           });
         },
-        (argv) => startGateway(Number(argv.port), 'http://localhost:4001', Boolean(argv.verbose)),
+        (argv) => {
+          console.log(figlet.textSync('beffe 1.0', 'Rectangles'));
+          startGateway(Number(argv.port), 'http://localhost:4001', String(argv.path), Boolean(argv.verbose));
+      },
     )
     .command('logo', 'Show the logo', (yargs) => {
       console.log(figlet.textSync('beffe 1.0', 'Rectangles'));

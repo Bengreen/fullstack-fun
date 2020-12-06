@@ -30,8 +30,8 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           env:
-          - name: BASE_HREF
-            value: {{ default "/" .Values.baseHref }}
+          - name: GATEWAY_PATH
+            value: {{ default "/" .Values.gatewayPath }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

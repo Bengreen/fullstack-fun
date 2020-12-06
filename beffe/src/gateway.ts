@@ -9,7 +9,11 @@ import express from 'express';
  * @param {int} servers The second number.
  * @param {Boolean} verbose Enable verbose mode
  */
-export default function startGateway(port: number, servers: string, verbose: Boolean = false) {
+export default function startGateway(
+  port: number,
+  servers: string,
+  path: string,
+  verbose: Boolean = false) {
   if (verbose) console.info(`start server on :${port}`);
 
   const gateway = new ApolloGateway({
@@ -45,7 +49,7 @@ export default function startGateway(port: number, servers: string, verbose: Boo
   });
 
 
-  server.applyMiddleware({app});
+  server.applyMiddleware({app, path: path});
 
   app.listen({port: port}, () =>
     console.log(
