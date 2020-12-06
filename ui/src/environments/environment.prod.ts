@@ -25,5 +25,6 @@ export const environment = {
     showDebugInformation: false,
     disableAtHashCheck: true
   },
-  baseHref: env['baseHref']
+  baseHref: env['baseHref'],
+  configUrl: env['backendUrl']
 };

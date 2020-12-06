@@ -14,6 +14,8 @@ import { HomeModule } from './home/home.module';
 import { APP_BASE_HREF } from '@angular/common';
 
 import { environment } from './../environments/environment';
+import { CoreModule } from './core/core.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { environment } from './../environments/environment';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
@@ -29,7 +32,8 @@ import { environment } from './../environments/environment';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    HomeModule
+    HomeModule,
+    CoreModule
   ],
   providers: [
     {

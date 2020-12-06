@@ -6,7 +6,8 @@ const env = {
   openIdIssuer: 'abc',
   openIdRedirectUri: 'cdef',
   openIdClientId: 'abc',
-  baseHref: '/'
+  baseHref: '/',
+  backendUrl: '/backend'
 }
 
 export const environment = {
@@ -22,7 +23,8 @@ export const environment = {
     showDebugInformation: true,
     disableAtHashCheck: true
   },
-  baseHref: env['baseHref']
+  baseHref: env['baseHref'],
+  configUrl: env['backendUrl']
 };
 
 /*
