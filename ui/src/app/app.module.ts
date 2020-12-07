@@ -16,6 +16,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { environment } from './../environments/environment';
 import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { HttpClientModule } from '@angular/common/http';
     MatIconModule,
     MatListModule,
     HomeModule,
-    CoreModule
+    CoreModule,
+    GraphQLModule
   ],
   providers: [
     {
