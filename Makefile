@@ -5,12 +5,25 @@ UINAME=ui
 BENAME=be
 
 BASE_HREF=/monkey/poo
+BASE_PATH=/monkey/cho
 
 ${BENAME}-build:
 	cd be; docker build -t ${BENAME} .
 
 ${BENAME}-shell: ${BENAME}-build
-	docker run -it --env BASE_HREF=${BASE_HREF} ${BENAME} /bin/bash
+	docker run -it --env BASE_PATH=${BASE_PATH} ${BENAME} /bin/bash
+
+${BENAME}-devshell:
+	cd beffe; docker build -t ${BENAME}-devshell --target BUILD .
+	docker run -it --env BASE_PATH=${BASE_PATH} ${BENAME}-devshell /bin/bash
+
+${BENAME}-run: ${BENAME}-build
+	docker run -it --env BASE_PATH=${BASE_PATH} -p 80:8080 ${BENAME}
+
+${BENAME}-publish: ${BENAME}-build
+	docker tag ${BENAME} ${REGISTRY}/${BENAME}
+	docker push ${REGISTRY}/${BENAME}
+
 
 
 ${BEFFENAME}-build:

@@ -25,13 +25,14 @@ class ArticleView(PydanticView):
         return web.json_response({'with_comments': with_comments})
 
 
-basePath = environ.get('BASE_PATH', '/')
+basePath = environ.get('BASE_PATH', '')
 logging.info(f'App BASE_PATH={basePath}')
+print(f'App BASE_PATH={basePath}')
 
 
 app = web.Application()
 
-app.router.add_view(f'{basePath}article', ArticleView)
+app.router.add_view(basePath+'/article', ArticleView)
 
 oas.setup(app)
 # import pdb; pdb.set_trace()

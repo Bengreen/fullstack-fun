@@ -8,4 +8,9 @@ RUN pip install .
 COPY app/ app/
 
 
+
+FROM BUILD as PUBLISH
+
 EXPOSE 8080
+
+CMD [ "python", "app/myfile.py" ]
