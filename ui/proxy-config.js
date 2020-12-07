@@ -1,10 +1,11 @@
-apiUrl = process.env.BACKEND_URL || "http://simple.k8s:80"
+const apiUrl = process.env.BACKEND_URL || "http://simple.k8s"
 
 console.log('Setting up proxy to:', apiUrl);
 
 const PROXY_CONFIG = {
-  "/backend": {
+  "/backend/*": {
     "target": apiUrl,
+    "changeOrigin": true,
     "secure": false,
     "logLevel": "debug",
     "bypass": function (req, res, proxyOptions) {
