@@ -2,7 +2,14 @@
 {{ config | json }}
 
 <div>
-    <button mat-raised-button color="primary"  (click)="getGraphQl()">Primary</button>
+    <button mat-raised-button color="primary"  (click)="getGraphQlHttp()">GraphQL HTTP</button>
+    <div>
+        {{ graphqlHttp | json }}
+    </div>
+</div>
+
+<div>
+    <button mat-raised-button color="primary"  (click)="getGraphQl()">GraphQL</button>
     <div>
         {{ graphql | json }}
     </div>
