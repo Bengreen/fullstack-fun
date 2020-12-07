@@ -2,8 +2,16 @@ REGISTRY=dockerreg.k8s:5000
 
 BEFFENAME=beffe
 UINAME=ui
+BENAME=be
 
 BASE_HREF=/monkey/poo
+
+${BENAME}-build:
+	cd be; docker build -t ${BENAME} .
+
+${BENAME}-shell: ${BENAME}-build
+	docker run -it --env BASE_HREF=${BASE_HREF} ${BENAME} /bin/bash
+
 
 ${BEFFENAME}-build:
 	cd beffe; docker build -t ${BEFFENAME} .
