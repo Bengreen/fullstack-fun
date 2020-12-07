@@ -25,12 +25,23 @@ class ArticleView(PydanticView):
         return web.json_response({'with_comments': with_comments})
 
 
+async def k8s_ready(request):
+    return web.json_response( {"ready": True})
+
+async def k8s_alive(request):
+    return web.json_response( {"ready": True})
+
+
+
 basePath = environ.get('BASE_PATH', '')
 logging.info(f'App BASE_PATH={basePath}')
 print(f'App BASE_PATH={basePath}')
 
 
 app = web.Application()
+
+app.add_routes([web.get('/alive', k8s_alive),
+                web.get('/ready', k8s_ready)])
 
 app.router.add_view(basePath+'/article', ArticleView)
 

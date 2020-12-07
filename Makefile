@@ -14,7 +14,7 @@ ${BENAME}-shell: ${BENAME}-build
 	docker run -it --env BASE_PATH=${BASE_PATH} ${BENAME} /bin/bash
 
 ${BENAME}-devshell:
-	cd beffe; docker build -t ${BENAME}-devshell --target BUILD .
+	cd be; docker build -t ${BENAME}-devshell --target BUILD .
 	docker run -it --env BASE_PATH=${BASE_PATH} ${BENAME}-devshell /bin/bash
 
 ${BENAME}-run: ${BENAME}-build
