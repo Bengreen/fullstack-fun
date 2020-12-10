@@ -17,6 +17,7 @@ import { environment } from './../environments/environment';
 import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { GraphQLModule } from './graphql.module';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,13 @@ import { GraphQLModule } from './graphql.module';
     MatListModule,
     HomeModule,
     CoreModule,
-    GraphQLModule
+    GraphQLModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['https://www.googleapis.com/oauth2/v2/userinfo'],
+        sendAccessToken: true
+      }
+    })
   ],
   providers: [
     {
