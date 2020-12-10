@@ -64,3 +64,10 @@ ${UINAME}-publish: ${UINAME}-build
 
 install:
 	helm upgrade -i ${UINAME} helm/simple
+
+helm-upgrade:
+	cd helm; helm upgrade -i mybe be
+	cd helm; helm upgrade -i mybeffe beffe
+	cd helm; helm upgrade -i myui ui
+	cd helm; helm upgrade -i ing ingress
+
