@@ -9,5 +9,10 @@ setuptools.setup(
         install_requires=[
             'aiohttp_pydantic'
             ],
+        extras_require={
+            'dev': [
+                'aiohttp-devtools'
+             ]
+        },
         packages=setuptools.find_packages()
         )

@@ -15,7 +15,7 @@ ${BENAME}-shell: ${BENAME}-build
 
 ${BENAME}-devshell:
 	cd be; docker build -t ${BENAME}-devshell --target BUILD .
-	docker run -it --env BASE_PATH=${BASE_PATH} ${BENAME}-devshell /bin/bash
+	docker run -it --env BASE_PATH=${BASE_PATH} --mount type=bind,source=${CURDIR}/be/app,target=/home/work/app -p 8081:8080 ${BENAME}-devshell /bin/bash
 
 ${BENAME}-run: ${BENAME}-build
 	docker run -it --env BASE_PATH=${BASE_PATH} -p 80:8080 ${BENAME}
@@ -33,8 +33,8 @@ ${BEFFENAME}-shell: ${BEFFENAME}-build
 	docker run -it --env BASE_HREF=${BASE_HREF} ${BEFFENAME} /bin/bash
 
 ${BEFFENAME}-devshell:
-	cd beffe; docker build -t ${BEFFENAME}-devshell --target BUILD .
-	docker run -it --env BASE_HREF=${BASE_HREF} ${BEFFENAME}-devshell /bin/bash
+	cd beffe; docker build -t ${BEFFENAME}-devshell --target BUILDENV .
+	docker run -it --env BASE_HREF=${BASE_HREF} --mount type=bind,source=${CURDIR}/beffe/src,target=/home/node/src -p 4000:4000 ${BEFFENAME}-devshell /bin/bash
 
 
 ${BEFFENAME}-run: ${BEFFENAME}-build

@@ -1,15 +1,16 @@
-FROM python:3 as BUILD
+FROM python:3 as BUILDENV
 
 WORKDIR /home/work
 COPY setup.py ./
 
 RUN pip install .
 
+FROM BUILDENV as BUILD
+RUN pip install -e .[dev]
+
+
+FROM BUILDENV as PUBLISH
 COPY app/ app/
-
-
-
-FROM BUILD as PUBLISH
 
 EXPOSE 8080
 
