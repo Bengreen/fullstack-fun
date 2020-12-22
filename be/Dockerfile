@@ -1,16 +1,19 @@
-FROM python:3 as BUILD
+FROM python:3 as BUILDENV
 
 WORKDIR /home/work
 COPY setup.py ./
-
 RUN pip install .
 
-COPY app/ app/
+COPY entrypoint-dev.sh .
+
+FROM BUILDENV as BUILD
+RUN pip install -e .[dev]
 
 
-
-FROM BUILD as PUBLISH
+FROM BUILDENV as PUBLISH
+COPY static/ static/
+COPY be/ be/
 
 EXPOSE 8080
 
-CMD [ "python", "app/myfile.py" ]
+CMD [ "python", "-m", "be" ]

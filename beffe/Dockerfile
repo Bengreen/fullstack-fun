@@ -1,4 +1,4 @@
-FROM node:14 as BUILD
+FROM node:14 as BUILDENV
 
 WORKDIR /home/node
 
@@ -7,6 +7,8 @@ COPY package*.json ./
 RUN npm install
 
 COPY ts* ./
+
+FROM BUILDENV as BUILD
 COPY src/ src/
 
 RUN npm run build

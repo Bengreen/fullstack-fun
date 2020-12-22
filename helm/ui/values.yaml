@@ -52,7 +52,7 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-baseHref: "/monkey/poo"
+baseHref: "/backend/poo"
 
 autoscaling:
   enabled: false
