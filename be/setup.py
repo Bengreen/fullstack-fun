@@ -7,7 +7,9 @@ setuptools.setup(
         author_email='BenJGreene@gmail.com',
         description='OAS server',
         install_requires=[
-            'aiohttp_pydantic'
+            'aiohttp_pydantic',
+            'aiohttp_jinja2',
+            'aiohttp-session[secure]'
             ],
         extras_require={
             'dev': [

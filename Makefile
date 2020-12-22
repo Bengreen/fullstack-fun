@@ -15,7 +15,7 @@ ${BENAME}-shell: ${BENAME}-build
 
 ${BENAME}-devshell:
 	cd be; docker build -t ${BENAME}-devshell --target BUILD .
-	docker run -it --env BASE_PATH=${BASE_PATH} --mount type=bind,source=${CURDIR}/be/app,target=/home/work/app -p 8081:8080 ${BENAME}-devshell /bin/bash
+	docker run -it --env BASE_PATH=${BASE_PATH} --mount type=bind,source=${CURDIR}/be/be,target=/home/work/be --mount type=bind,source=${CURDIR}/be/static,target=/home/work/static -p 8081:8080 ${BENAME}-devshell /bin/bash
 
 ${BENAME}-run: ${BENAME}-build
 	docker run -it --env BASE_PATH=${BASE_PATH} -p 80:8080 ${BENAME}
