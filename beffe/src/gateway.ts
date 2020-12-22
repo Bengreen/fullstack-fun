@@ -2,6 +2,49 @@
 import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway';
 import {ApolloServer} from 'apollo-server-express';
 import express from 'express';
+import yargs from 'yargs';
+
+
+export interface IServer {
+  name: string;
+  url: string;
+}
+
+export interface IServerConf {
+  servers: IServer[];
+}
+
+
+if (require.main === module) {
+  console.log('gateway called directly');
+} else {
+  console.log('gateway required as a module');
+}
+
+
+export function gatewayCli(yargs: yargs.Argv<{}>) {
+  // console.log('gatewayCLI called with ',yargs);
+  return yargs
+    .env('GATEWAY')
+    .option('path', {
+      default: '/graphql',
+      describe: 'Path to serve GraphQL'
+    })
+    .option('file', {
+      alias: 'f',
+      demandOption: "config file is required.",
+      // default: '',
+      describe: 'File for config'
+    })
+    .option('port', {
+      alias: 'p',
+      default: 4000,
+      describe: 'Port for gateway'
+    })
+    .help();
+}
+
+
 
 /**
  * Starts a GraphQL Gateway connecting to GraphQL Servers
@@ -9,15 +52,16 @@ import express from 'express';
  * @param {int} servers The second number.
  * @param {Boolean} verbose Enable verbose mode
  */
-export default function startGateway(
+export function startGateway(
   port: number,
-  servers: string,
+  servers: IServer[],
   path: string,
   verbose: Boolean = false) {
   if (verbose) console.info(`start server on :${port}`);
 
   const gateway = new ApolloGateway({
-    serviceList: [{name: 'accounts', url: servers}],
+    // serviceList: [{name: 'accounts', url: servers}],
+    serviceList: servers,
     buildService({url}) {
       return new RemoteGraphQLDataSource({
         url,

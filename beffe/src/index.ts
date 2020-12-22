@@ -2,7 +2,16 @@
 
 import figlet from 'figlet';
 import yargs from 'yargs';
-import startGateway from './gateway';
+import { startGateway, IServerConf, gatewayCli } from './gateway';
+import yaml from 'js-yaml';
+import fs from 'fs';
+
+
+if (require.main === module) {
+  console.log('index called directly');
+} else {
+  console.log('index required as a module');
+}
 
 yargs
     .scriptName('beffe-server')
@@ -10,22 +19,21 @@ yargs
     .command(
         'gateway [port]',
         'start the gateway',
-        (yargs) => {
-          yargs
-          .env('GATEWAY')
-          .option('path', {
-            default: 'graphql',
-            describe: 'Path to serve GraphQL'
-          })
-          .option('port', {
-            alias: 'p',
-            default: 4000,
-            describe: 'Port for gateway'
-          });
-        },
+        (yargs) => gatewayCli(yargs),
         (argv) => {
           console.log(figlet.textSync('beffe 1.0', 'Rectangles'));
-          startGateway(Number(argv.port), 'http://localhost:4001', String(argv.path), Boolean(argv.verbose));
+          
+          console.log(`Reading config from: ${argv.file}`);
+
+          const serverFile = fs.readFileSync(String(argv.file), 'utf8');
+          const serverConf = yaml.safeLoad(serverFile) as IServerConf;
+
+          serverConf.servers.forEach((server) => {
+            console.log(server);
+          })
+
+
+          startGateway(Number(argv.port), serverConf.servers , String(argv.path), Boolean(argv.verbose));
       },
     )
     .command('logo', 'Show the logo', (yargs) => {
