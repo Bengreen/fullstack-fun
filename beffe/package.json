@@ -15,6 +15,7 @@
     "devserver:build": "tsc -w",
     "devserver:accounts": "nodemon --watch dist/accounts dist/accounts/index.js",
     "devserver:gateway": "wait-on tcp:4001 && nodemon --watch dist dist/index.js gateway -f example-config.yaml",
+    "devserver:oas2graphql": "wait-on tcp:4001 && nodemon --watch dist dist/index.js oas2graphql -f oas2graphql-config.yaml",
     "compile": "tsc",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
