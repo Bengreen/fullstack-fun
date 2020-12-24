@@ -7,3 +7,6 @@ async def k8s_ready(request):
 async def k8s_alive(request):
     return web.json_response( {"alive": True})
 
+async def oas_spec(request):
+    return web.json_response(request.app['oas_spec'])
+

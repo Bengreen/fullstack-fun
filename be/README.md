@@ -11,3 +11,9 @@ To run your app you'll need to:
  use environment variables to define sensitive settings, eg. DB connection variables
 4. You can then run your app during development with `adev runserver -s static app`
 
+
+Test OpenAPI spec file
+
+
+    cat some.yaml | openapi-spec-validator -
+

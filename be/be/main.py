@@ -8,12 +8,16 @@ import jinja2
 from aiohttp import web
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 
+from aiohttp_pydantic.oas.view import generate_oas
+
 # from .db import prepare_database
 from .settings import Settings
 from .views import ArticleView
 # from .views import index, message_data, messages
 from aiohttp_pydantic import oas
-from .k8s_view import k8s_alive, k8s_ready
+from aiohttp_pydantic.oas.struct import OpenApiSpec3
+
+from .platform_view import k8s_alive, k8s_ready, oas_spec
 
 import logging
 
@@ -32,6 +36,17 @@ async def startup(app: web.Application):
 async def cleanup(app: web.Application):
     pass
     # await app['pg'].close()
+
+def base_spec():
+    # spec = OpenApiSpec3()
+    # spec.info.title = 'Monkey'
+
+    return  {
+        'info': {
+            'title': 'Monkey',
+            'version': '0.0.1'
+        }
+    }
 
 
 async def create_app():
@@ -54,16 +69,28 @@ async def create_app():
     basePath = settings.base_path
     logger.info(f'App BASE_PATH={basePath}')
 
+    # Register platform endpoints
     app.add_routes([web.get('/alive', k8s_alive),
-                    web.get('/ready', k8s_ready)])
+                    web.get('/ready', k8s_ready),
+                    web.get('/oas/spec', oas_spec)
+                    ])
 
+    # Register application endpoints
     app.router.add_view(basePath+'/article', ArticleView)
 
     # app.router.add_get('/', index, name='index')
     # app.router.add_route('*', '/messages', messages, name='messages')
     # app.router.add_get('/messages/data', message_data, name='message-data')
  
-    oas.setup(app)
+
+    app['oas_spec'] = base_spec()
+    app['oas_spec'].update(generate_oas([app]))
+   
+    print(f'OAS Spec = {app["oas_spec"]}')
+
+    # oas.setup(app)
+
+
 
     for resource in app.router.resources():
         logger.info(resource)
@@ -71,3 +98,12 @@ async def create_app():
 
     return app
 
+def main(argv):
+    logging.basicConfig(level=logging.DEBUG)
+
+    app = create_app()
+
+   
+    web.run_app(app,
+                host='0.0.0.0',
+                port='8080')
