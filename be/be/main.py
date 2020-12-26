@@ -72,7 +72,7 @@ async def create_app():
     # Register platform endpoints
     app.add_routes([web.get('/alive', k8s_alive),
                     web.get('/ready', k8s_ready),
-                    web.get('/oas/spec', oas_spec)
+                    web.get(basePath+'/oas/spec', oas_spec)
                     ])
 
     # Register application endpoints
@@ -89,7 +89,6 @@ async def create_app():
     print(f'OAS Spec = {app["oas_spec"]}')
 
     # oas.setup(app)
-
 
 
     for resource in app.router.resources():
