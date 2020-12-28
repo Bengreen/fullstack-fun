@@ -1,7 +1,7 @@
 ---
 servers:
   - name: be
-    url: http://127.0.0.1:4001
+    url: http://simple.k8s/backend/cho/oas/spec
   # - name: sam1
   #   url: http://127.0.0.1:4001
 
