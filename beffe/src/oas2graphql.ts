@@ -73,6 +73,9 @@ export async function startOas2graphql(
         console.log(`Looking at this schema ${schema}`);
     });
 
+
+    console.log(`SCHEMAS = `, schemas);
+
     // servers.forEach((server) => {
     //     console.log(`Pulling server ${server.name} = ${server.url}`);
 
