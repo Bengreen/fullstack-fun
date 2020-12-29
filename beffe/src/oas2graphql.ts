@@ -4,6 +4,10 @@ import * as http from 'http';
 import got from 'got';
 // const { createGraphQLSchema } = require("openapi-to-graphql");
 import * as OtG from 'openapi-to-graphql';
+import { Oas3 } from 'openapi-to-graphql/lib/types/oas3';
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+
 // const OtG = require('openapi-to-graphql')
 
 
@@ -48,7 +52,7 @@ export function oas2graphqlCli(yargs: yargs.Argv<{}>) {
 
 export async function startOas2graphql(
     port: number,
-    path: String,
+    path: string,
     servers: IOasServer[],
     verbose: Boolean = false) {
     console.log(figlet.textSync('oas2graphql 1.0', 'Rectangles'));
@@ -57,24 +61,30 @@ export async function startOas2graphql(
 
     console.log('Hello');
 
-    var schemas = await Promise.all(servers.map(async (server) => {
+    var schemas = await Promise.all(servers.map(async (server): Oas3 => {
         console.log(`Pulling GOT server ${server.name} = ${server.url}`);
         let reply = await got(server.url).json();
         // console.log(`REPLY = ${reply}`);
-        
-        return reply;
+
+        return reply as Oas3;
     }));
 
     console.log(`oas IS = `, schemas);
 
-    var gqls = schemas.map(async (oas: any) => {
-        const { schema } = await OtG.createGraphQLSchema(oas);
+    let gqlServerDef = await OtG.createGraphQLSchema(schemas);
+    const { schema } = gqlServerDef;
+    console.log(`Looking at this schema ${schema}`);
+    // var gqls = await Promise.all(schemas.map(async (oas) => {
+    //     let server = await OtG.createGraphQLSchema(oas);
+    //     const { schema } = server;
 
-        console.log(`Looking at this schema ${schema}`);
-    });
+    //     console.log(`Looking at this schema ${schema}`);
+    //     return server;
+    // }));
 
+    const server = new ApolloServer({schema});
 
-    console.log(`SCHEMAS = `, schemas);
+    console.log(`gqls = `, gqlServerDef);
 
     // servers.forEach((server) => {
     //     console.log(`Pulling server ${server.name} = ${server.url}`);
@@ -105,7 +115,31 @@ export async function startOas2graphql(
     // });
 
 
+    const app = express();
 
+
+    app.get('/alive', (req, res) => {
+        console.log("alive")
+        res.json({ hello: 'I am alive!' });
+    });
+
+    app.get('/ready', (req, res) => {
+        console.log("ready")
+        res.json({ hello: 'I am ready!' });
+    });
+
+    server.applyMiddleware({app, path: path});
+
+    // app.use('/', graphqlHTTP({
+    //     schema: schema,
+    //     graphiql: true
+    //   }))
+
+    app.listen({ port: port }, () =>
+        console.log(
+            `Gateway server started: http://localhost:${port}${path}`,
+        ),
+    );
 
 
 
