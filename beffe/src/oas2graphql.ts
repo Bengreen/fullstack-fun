@@ -61,7 +61,7 @@ export async function startOas2graphql(
 
     console.log('Hello');
 
-    var schemas = await Promise.all(servers.map(async (server): Oas3 => {
+    var schemas = await Promise.all(servers.map( async (server): Promise<Oas3> => {
         console.log(`Pulling GOT server ${server.name} = ${server.url}`);
         let reply = await got(server.url).json();
         // console.log(`REPLY = ${reply}`);
