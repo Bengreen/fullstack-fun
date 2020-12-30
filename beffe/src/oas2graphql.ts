@@ -95,10 +95,8 @@ async function startOas2graphql(
 
     if (verbose) console.info(`start server on :${port}`);
 
-    console.log('Hello');
-
     var schemas = await Promise.all(servers.map(async (server): Promise<Oas3> => {
-        console.log(`Pulling GOT server ${server.name} = ${server.url}`);
+        console.log(`Getting oas: ${server.name} = ${server.url}`);
         let reply = await got(server.url).json();
 
         return reply as Oas3;
@@ -108,23 +106,17 @@ async function startOas2graphql(
 
     let gqlServerDef = await OtG.createGraphQLSchema(schemas);
     const { schema } = gqlServerDef;
-    console.log(`Looking at this schema ${schema}`);
-    console.log(`schem type`, schema.getTypeMap());
-    console.log(`query = `, schema.getType('Query'));
 
-    const server = new ApolloServer({ schema, debug: true });
+    const server = new ApolloServer({ schema });
 
-    console.log(`typeDefs =`, typeDefs);
-    console.log(`resolvers = `, resolvers);
-    const serverFederated = new ApolloServer({
-        schema: buildFederatedSchema([{ typeDefs, resolvers }]),
-    });
+    //https://www.apollographql.com/blog/three-ways-to-represent-your-graphql-schema-a41f4175100d/
+    // const serverFederated = new ApolloServer({
+    //     schema: buildFederatedSchema([{ typeDefs, resolvers }]),
+    // });
 
-
-    console.log(`gqls = `, gqlServerDef);
+    console.log(`gql = `, gqlServerDef);
 
     const app = express();
-
 
     app.get('/alive', (req, res) => {
         console.log("alive")
@@ -137,12 +129,10 @@ async function startOas2graphql(
     });
 
 
-    path = '/';
-    if (false) {
-        serverFederated.applyMiddleware({ app, path: path });
-    } else {
-        server.applyMiddleware({ app, path: path });
-    }
+    // serverFederated.applyMiddleware({ app, path: path });
+
+    server.applyMiddleware({ app, path: path });
+
 
     app.listen({ port: port }, () =>
         console.log(

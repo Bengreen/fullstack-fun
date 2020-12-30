@@ -89,8 +89,11 @@ async function startGatewayStitch(
     if (verbose) console.info(`start server on :${port}`);
 
     let allSchemas = await Promise.all(servers.map(server => getIntrospectSchema(server.url)));
+    let mergedSchemas = mergeSchemas({ schemas: allSchemas });
+    console.log(`Schemas = `, mergedSchemas);
+
     const server = new ApolloServer({
-        schema: mergeSchemas({ schemas: allSchemas })
+        schema: mergedSchemas
     });
 
     const app = express();
