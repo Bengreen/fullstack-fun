@@ -10,19 +10,19 @@ export interface IServer {
   url: string;
 }
 
-export interface IServerConf {
+export interface IGatewayFedConf {
   servers: IServer[];
 }
 
 
 if (require.main === module) {
-  console.log('gateway called directly');
+  console.log('gatewayFed called directly');
 } else {
-  console.log('gateway required as a module');
+  console.log('gatewayFed required as a module');
 }
 
 
-export function gatewayCli(yargs: yargs.Argv<{}>) {
+export function gatewayFedCli(yargs: yargs.Argv<{}>) {
   // console.log('gatewayCLI called with ',yargs);
   return yargs
     .env('GATEWAY')
@@ -52,7 +52,7 @@ export function gatewayCli(yargs: yargs.Argv<{}>) {
  * @param {int} servers The second number.
  * @param {Boolean} verbose Enable verbose mode
  */
-export function startGateway(
+export function startGatewayFed(
   port: number,
   servers: IServer[],
   path: string,
@@ -62,6 +62,7 @@ export function startGateway(
   const gateway = new ApolloGateway({
     // serviceList: [{name: 'accounts', url: servers}],
     serviceList: servers,
+    debug: true,
     buildService({url}) {
       return new RemoteGraphQLDataSource({
         url,

@@ -2,13 +2,37 @@ import yargs from 'yargs';
 import figlet from 'figlet';
 import * as http from 'http';
 import got from 'got';
-// const { createGraphQLSchema } = require("openapi-to-graphql");
 import * as OtG from 'openapi-to-graphql';
 import { Oas3 } from 'openapi-to-graphql/lib/types/oas3';
+
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
+// import { ApolloServer } from 'apollo-server';
+import { buildFederatedSchema } from '@apollo/federation';
 
-// const OtG = require('openapi-to-graphql')
+
+import { gql } from 'apollo-server';
+
+const typeDefs = gql`
+  """
+  This is the account info for the users
+  """
+
+
+  type Query {
+    """
+    Query an account by id
+    """
+    roy: String
+  }
+`;
+const resolvers = {
+    Query: {
+        roy: () => 'roy',
+    },
+};
+
+
 
 
 if (require.main === module) {
@@ -61,10 +85,9 @@ export async function startOas2graphql(
 
     console.log('Hello');
 
-    var schemas = await Promise.all(servers.map( async (server): Promise<Oas3> => {
+    var schemas = await Promise.all(servers.map(async (server): Promise<Oas3> => {
         console.log(`Pulling GOT server ${server.name} = ${server.url}`);
         let reply = await got(server.url).json();
-        // console.log(`REPLY = ${reply}`);
 
         return reply as Oas3;
     }));
@@ -74,46 +97,19 @@ export async function startOas2graphql(
     let gqlServerDef = await OtG.createGraphQLSchema(schemas);
     const { schema } = gqlServerDef;
     console.log(`Looking at this schema ${schema}`);
-    // var gqls = await Promise.all(schemas.map(async (oas) => {
-    //     let server = await OtG.createGraphQLSchema(oas);
-    //     const { schema } = server;
+    console.log(`schem type`, schema.getTypeMap());
+    console.log(`query = `, schema.getType('Query'));
 
-    //     console.log(`Looking at this schema ${schema}`);
-    //     return server;
-    // }));
+    const server = new ApolloServer({ schema, debug: true });
 
-    const server = new ApolloServer({schema});
+    console.log(`typeDefs =`, typeDefs);
+    console.log(`resolvers = `, resolvers);
+    const serverFederated = new ApolloServer({
+        schema: buildFederatedSchema([{ typeDefs, resolvers }]),
+    });
+
 
     console.log(`gqls = `, gqlServerDef);
-
-    // servers.forEach((server) => {
-    //     console.log(`Pulling server ${server.name} = ${server.url}`);
-
-    //     http.get(server.url, (res) => {
-    //         let data = '';
-    //         // const { statusCode } = res;
-
-    //         console.log(`File is ${res}`);
-
-    //         // A chunk of data has been recieved.
-    //         res.on('data', (chunk) => {
-    //             data += chunk;
-    //         });
-
-    //         // The whole response has been received. Print out the result.
-    //         res.on('end', async () => {
-    //             console.log(`OAS = ${data}`);
-    //             const dataJson = JSON.parse(data);
-    //             const { schema } = await OtG.createGraphQLSchema(dataJson);
-
-    //             console.log(`Looking at this schema ${schema}`);
-    //         });
-
-    //     }).on("error", (err) => {
-    //         console.log("Error: " + err.message);
-    //     });
-    // });
-
 
     const app = express();
 
@@ -128,21 +124,19 @@ export async function startOas2graphql(
         res.json({ hello: 'I am ready!' });
     });
 
-    server.applyMiddleware({app, path: path});
 
-    // app.use('/', graphqlHTTP({
-    //     schema: schema,
-    //     graphiql: true
-    //   }))
+    path = '/';
+    if (false) {
+        serverFederated.applyMiddleware({ app, path: path });
+    } else {
+        server.applyMiddleware({ app, path: path });
+    }
 
     app.listen({ port: port }, () =>
         console.log(
-            `Gateway server started: http://localhost:${port}${path}`,
+            `OAS server started: http://localhost:${port}${path}`,
         ),
     );
-
-
-
 
 }
 
