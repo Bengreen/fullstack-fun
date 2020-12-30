@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import express from 'express';
-import yargs from 'yargs';
+import yargs, { command } from 'yargs';
 import figlet from 'figlet';
 import yaml from 'js-yaml';
 import fs from 'fs';
@@ -10,20 +10,17 @@ import { createHttpLink } from 'apollo-link-http';
 import { ApolloServer } from 'apollo-server-express';
 import fetch from 'cross-fetch';
 
-
-export interface IServer {
+interface IServer {
     name: string;
     url: string;
 }
 
-export interface IGatewayStitchConf {
+interface IGatewayStitchConf {
     servers: IServer[];
 }
 
 
-
-
-export function gatewayStitchCli(yargs: yargs.Argv<{}>) {
+function gatewayStitchCli(yargs: yargs.Argv<{}>) {
     // console.log('gatewayCLI called with ',yargs);
     return yargs
         .env('GATEWAY')
@@ -45,7 +42,7 @@ export function gatewayStitchCli(yargs: yargs.Argv<{}>) {
         .help();
 }
 
-export async function gatewayStitchStart(argv: any) {
+async function gatewayStitchStart(argv: any) {
 
     console.log(figlet.textSync('beffe stitch 1.0', 'Rectangles'));
 
@@ -55,18 +52,16 @@ export async function gatewayStitchStart(argv: any) {
     const serverConf = yaml.safeLoad(serverFile) as IGatewayStitchConf;
 
     serverConf.servers.forEach((server) => {
-      console.log(server);
+        console.log(server);
     });
 
-    await startGatewayStitch(Number(argv.port), serverConf.servers, String(argv.path), Boolean(argv.verbose));
- 
+    await startGatewayStitch(Number(argv.port), String(argv.path), serverConf.servers, Boolean(argv.verbose));
 }
 
 /* Copied from https://github.com/supercycle91/graphql-microservices-example/blob/master/main-api/introspection.js
 */
 async function getIntrospectSchema(url: string) {
     // Create a link to a GraphQL instance by passing fetch instance and url
-    console.log('doing http with ', url);
     const makeServiceLink = () => createHttpLink({
         uri: url,
         fetch
@@ -83,10 +78,10 @@ async function getIntrospectSchema(url: string) {
 }
 
 
-export async function startGatewayStitch(
+async function startGatewayStitch(
     port: number,
-    servers: IServer[],
     path: string,
+    servers: IServer[],
     verbose: Boolean = false
 ) {
     if (verbose) console.info(`start server on :${port}`);
@@ -95,7 +90,7 @@ export async function startGatewayStitch(
     const server = new ApolloServer({
         schema: mergeSchemas({ schemas: allSchemas })
     });
-    
+
     const app = express();
 
     app.get('/alive', (req, res) => {
@@ -108,7 +103,7 @@ export async function startGatewayStitch(
         res.json({ hello: 'I am ready!' });
     });
 
-    server.applyMiddleware({app, path: path});
+    server.applyMiddleware({ app, path: path });
 
     app.listen({ port: port }, () =>
         console.log(
@@ -121,15 +116,14 @@ export async function startGatewayStitch(
 export const stitchCli = {
     command: 'gateway-stitch [port]',
     aliases: '',
-    describe: 'my command does this',
+    describe: 'Create a stitch GraphQL merge and serve',
     builder: gatewayStitchCli,
     handler: gatewayStitchStart,
     deprecated: false
 }
 
 if (require.main === module) {
-    console.log('gatewayStich called directly');
-
+    stitchCli.handler(stitchCli.builder(yargs).argv);
 } else {
     console.log('gatewayStich required as a module');
 }

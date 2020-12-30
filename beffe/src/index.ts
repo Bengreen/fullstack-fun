@@ -39,12 +39,6 @@ yargs
     },
   )
   .command(stitchCli)
-  // .command(
-  //   'gateway-stitch [port]',
-  //   'start the gateway-stitch',
-  //   (yargs) => gatewayStitchCli(yargs),
-  //   (argv) => gatewayStitchStart(argv)
-  // )
   .command(
     'oas2graphql [port]',
     'start the oas2graphql',
@@ -58,7 +52,6 @@ yargs
       serverConf.servers.forEach((server) => {
         console.log(server);
       })
-
 
       startOas2graphql(Number(argv.port), String(argv.path), serverConf.servers, Boolean(argv.verbose));
 
