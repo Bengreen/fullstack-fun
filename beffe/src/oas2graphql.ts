@@ -1,11 +1,15 @@
-import yargs from 'yargs';
+/* eslint-disable max-len */
+import express from 'express';
+import yargs, { command } from 'yargs';
 import figlet from 'figlet';
+import yaml from 'js-yaml';
+import fs from 'fs';
+
 import * as http from 'http';
 import got from 'got';
 import * as OtG from 'openapi-to-graphql';
 import { Oas3 } from 'openapi-to-graphql/lib/types/oas3';
 
-import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 // import { ApolloServer } from 'apollo-server';
 import { buildFederatedSchema } from '@apollo/federation';
@@ -35,23 +39,18 @@ const resolvers = {
 
 
 
-if (require.main === module) {
-    console.log('oas2graphql called directly');
-} else {
-    console.log('oas2graphql required as a module');
-}
 
-export interface IOasServer {
+interface IOasServer {
     name: string,
     url: string
 }
 
-export interface IOasServerConf {
+interface IOasServerConf {
     servers: IOasServer[];
 }
 
 
-export function oas2graphqlCli(yargs: yargs.Argv<{}>) {
+function builder(yargs: yargs.Argv<{}>) {
     // console.log('gatewayCLI called with ',yargs);
     return yargs
         .env('OAS2')
@@ -73,8 +72,21 @@ export function oas2graphqlCli(yargs: yargs.Argv<{}>) {
         .help();
 }
 
+function handler(argv: any) {
+    console.log(`Reading config from: ${argv.file}`);
 
-export async function startOas2graphql(
+    const serverFile = fs.readFileSync(String(argv.file), 'utf8');
+    const serverConf = yaml.safeLoad(serverFile) as IOasServerConf;
+
+    serverConf.servers.forEach((server) => {
+        console.log(server);
+    })
+
+    startOas2graphql(Number(argv.port), String(argv.path), serverConf.servers, Boolean(argv.verbose));
+
+}
+
+async function startOas2graphql(
     port: number,
     path: string,
     servers: IOasServer[],
@@ -137,6 +149,19 @@ export async function startOas2graphql(
             `OAS server started: http://localhost:${port}${path}`,
         ),
     );
-
 }
 
+
+export const cliCommand = {
+    command: 'oas2graphql',
+    aliases: '',
+    describe: 'Create a oas2graphql transform and serve',
+    builder: builder,
+    handler: handler,
+    deprecated: false
+}
+
+
+if (require.main === module) {
+    cliCommand.handler(cliCommand.builder(yargs).argv);
+}

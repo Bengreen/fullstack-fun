@@ -1,8 +1,8 @@
-import {ApolloServer, gql} from 'apollo-server';
-import {buildFederatedSchema} from '@apollo/federation';
+import { ApolloServer, gql } from 'apollo-server';
+import { buildFederatedSchema } from '@apollo/federation';
 import fetch from 'node-fetch';
 
-import {accounts} from './data';
+import { accounts } from './data';
 
 const port = 4001;
 
@@ -47,7 +47,7 @@ const typeDefs = gql`
     open: String
   }
 `;
-const apiTestURL = 'https://localdev-app.gcp.mle-dev.digitalreasoning.com/api_test/v0';
+const apiTestURL = 'https://simple.k8s/api_test/v0';
 const resolvers = {
   Account: {
     _resolveReference(object: { id: string; }) {
@@ -55,7 +55,7 @@ const resolvers = {
     },
   },
   Query: {
-    account(parent: any, {id}: any) {
+    account(parent: any, { id }: any) {
       return accounts.find((account) => account.id === id);
     },
     accounts() {
@@ -64,7 +64,7 @@ const resolvers = {
     snow: () => `Hello`,
     james: () => 'I am James',
     hannah: () => 'I am Hannah',
-    verbose: () => ({verboseView: true, extra: 'verbose'}),
+    verbose: () => ({ verboseView: true, extra: 'verbose' }),
     verbose2: () => fetch(`${apiTestURL}/verbose`).then((res) => res.json()),
     protected: () => 'protected',
     open: () => 'open',
@@ -72,9 +72,9 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-  schema: buildFederatedSchema([{typeDefs, resolvers}]),
+  schema: buildFederatedSchema([{ typeDefs, resolvers }]),
 });
 
-server.listen({port}).then(({url}) => {
+server.listen({ port }).then(({ url }) => {
   console.log(`Accounts service ready at ${url}`);
 });

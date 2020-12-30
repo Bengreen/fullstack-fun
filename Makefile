@@ -34,7 +34,7 @@ ${BEFFENAME}-shell: ${BEFFENAME}-build
 
 ${BEFFENAME}-devshell:
 	cd beffe; docker build -t ${BEFFENAME}-devshell --target BUILDENV .
-	docker run -it --env BASE_HREF=${BASE_HREF} --mount type=bind,source=${CURDIR}/beffe/src,target=/home/node/src -p 4000:4000 ${BEFFENAME}-devshell /bin/bash
+	docker run -it --env BASE_HREF=${BASE_HREF} --mount type=bind,source=${CURDIR}/beffe/package.json,target=/home/node/package.json --mount type=bind,source=${CURDIR}/beffe/src,target=/home/node/src -p 4000:4000 ${BEFFENAME}-devshell /bin/bash
 
 
 ${BEFFENAME}-run: ${BEFFENAME}-build

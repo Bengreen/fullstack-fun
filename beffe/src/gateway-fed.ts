@@ -1,8 +1,14 @@
 /* eslint-disable max-len */
-import {ApolloGateway, RemoteGraphQLDataSource} from '@apollo/gateway';
-import {ApolloServer} from 'apollo-server-express';
 import express from 'express';
-import yargs from 'yargs';
+import yargs, { command } from 'yargs';
+import figlet from 'figlet';
+import yaml from 'js-yaml';
+import fs from 'fs';
+
+
+import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
+import { ApolloServer } from 'apollo-server-express';
+
 
 
 export interface IServer {
@@ -10,19 +16,13 @@ export interface IServer {
   url: string;
 }
 
-export interface IGatewayFedConf {
+interface IGatewayFedConf {
   servers: IServer[];
 }
 
 
-if (require.main === module) {
-  console.log('gatewayFed called directly');
-} else {
-  console.log('gatewayFed required as a module');
-}
 
-
-export function gatewayFedCli(yargs: yargs.Argv<{}>) {
+function builder(yargs: yargs.Argv<{}>) {
   // console.log('gatewayCLI called with ',yargs);
   return yargs
     .env('GATEWAY')
@@ -45,6 +45,23 @@ export function gatewayFedCli(yargs: yargs.Argv<{}>) {
 }
 
 
+async function handler(argv: any) {
+
+  console.log(figlet.textSync('beffe fed 1.0', 'Rectangles'));
+
+  console.log(`Reading config from: ${argv.file}`);
+
+  const serverFile = fs.readFileSync(String(argv.file), 'utf8');
+  const serverConf = yaml.safeLoad(serverFile) as IGatewayFedConf;
+
+  serverConf.servers.forEach((server) => {
+    console.log(server);
+  });
+
+  await startGatewayFed(Number(argv.port), String(argv.path), serverConf.servers, Boolean(argv.verbose));
+}
+
+
 
 /**
  * Starts a GraphQL Gateway connecting to GraphQL Servers
@@ -54,8 +71,8 @@ export function gatewayFedCli(yargs: yargs.Argv<{}>) {
  */
 export function startGatewayFed(
   port: number,
-  servers: IServer[],
   path: string,
+  servers: IServer[],
   verbose: Boolean = false) {
   if (verbose) console.info(`start server on :${port}`);
 
@@ -63,10 +80,10 @@ export function startGatewayFed(
     // serviceList: [{name: 'accounts', url: servers}],
     serviceList: servers,
     debug: true,
-    buildService({url}) {
+    buildService({ url }) {
       return new RemoteGraphQLDataSource({
         url,
-        willSendRequest({request, context}) {
+        willSendRequest({ request, context }) {
           request?.http?.headers.set('jwt', context.jwt);
         },
       });
@@ -75,8 +92,8 @@ export function startGatewayFed(
 
   const server = new ApolloServer({
     gateway,
-    context: ({req}) => {
-      return {jwt: req.headers.jwt};
+    context: ({ req }) => {
+      return { jwt: req.headers.jwt };
     },
     subscriptions: false,
   });
@@ -85,20 +102,34 @@ export function startGatewayFed(
 
   app.get('/alive', (req, res) => {
     console.log("alive")
-    res.json({hello: 'I am alive!'});
+    res.json({ hello: 'I am alive!' });
   });
 
   app.get('/ready', (req, res) => {
     console.log("ready")
-    res.json({hello: 'I am ready!'});
+    res.json({ hello: 'I am ready!' });
   });
 
+  server.applyMiddleware({ app, path: path });
 
-  server.applyMiddleware({app, path: path});
-
-  app.listen({port: port}, () =>
+  app.listen({ port: port }, () =>
     console.log(
-        `Gateway server started: http://localhost:${port}${server.graphqlPath}`,
+      `Gateway server started: http://localhost:${port}${server.graphqlPath}`,
     ),
   );
+}
+
+
+
+export const cliCommand = {
+  command: 'gateway-fed [port]',
+  aliases: '',
+  describe: 'Create a federated GraphQL merge and serve',
+  builder: builder,
+  handler: handler,
+  deprecated: false
+}
+
+if (require.main === module) {
+  cliCommand.handler(cliCommand.builder(yargs).argv);
 }

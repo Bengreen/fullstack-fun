@@ -1,4 +1,7 @@
 FROM node:14 as BUILDENV
+# Needs locale working to enable this
+# RUN apt update \
+#     && apt install -y tmux
 
 WORKDIR /home/node
 

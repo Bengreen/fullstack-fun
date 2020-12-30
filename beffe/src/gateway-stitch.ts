@@ -20,7 +20,7 @@ interface IGatewayStitchConf {
 }
 
 
-function gatewayStitchCli(yargs: yargs.Argv<{}>) {
+function builder(yargs: yargs.Argv<{}>) {
     // console.log('gatewayCLI called with ',yargs);
     return yargs
         .env('GATEWAY')
@@ -42,7 +42,8 @@ function gatewayStitchCli(yargs: yargs.Argv<{}>) {
         .help();
 }
 
-async function gatewayStitchStart(argv: any) {
+
+async function handler(argv: any) {
 
     console.log(figlet.textSync('beffe stitch 1.0', 'Rectangles'));
 
@@ -57,6 +58,7 @@ async function gatewayStitchStart(argv: any) {
 
     await startGatewayStitch(Number(argv.port), String(argv.path), serverConf.servers, Boolean(argv.verbose));
 }
+
 
 /* Copied from https://github.com/supercycle91/graphql-microservices-example/blob/master/main-api/introspection.js
 */
@@ -107,23 +109,22 @@ async function startGatewayStitch(
 
     app.listen({ port: port }, () =>
         console.log(
-            `Gateway Stitch server started: http://localhost:${port}${server.graphqlPath}`,
+            `Gateway Stitch server: http://localhost:${port}${server.graphqlPath}`,
         ),
     );
 }
 
 
-export const stitchCli = {
+export const cliCommand = {
     command: 'gateway-stitch [port]',
     aliases: '',
     describe: 'Create a stitch GraphQL merge and serve',
-    builder: gatewayStitchCli,
-    handler: gatewayStitchStart,
+    builder: builder,
+    handler: handler,
     deprecated: false
 }
 
+
 if (require.main === module) {
-    stitchCli.handler(stitchCli.builder(yargs).argv);
-} else {
-    console.log('gatewayStich required as a module');
+    cliCommand.handler(cliCommand.builder(yargs).argv);
 }
