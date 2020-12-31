@@ -10,12 +10,16 @@ import got from 'got';
 import * as OtG from 'openapi-to-graphql';
 import { Oas3 } from 'openapi-to-graphql/lib/types/oas3';
 
-import { ApolloServer } from 'apollo-server-express';
+import {
+    ApolloServer,
+} from 'apollo-server-express';
+
 // import { ApolloServer } from 'apollo-server';
 import { buildFederatedSchema } from '@apollo/federation';
 
 
 import { gql } from 'apollo-server';
+import { introspectionFromSchema, printSchema } from 'graphql';
 
 const typeDefs = gql`
   """
@@ -95,21 +99,31 @@ async function startOas2graphql(
 
     if (verbose) console.info(`start server on :${port}`);
 
-    var schemas = await Promise.all(servers.map(async (server): Promise<Oas3> => {
+    var oasSchemas = await Promise.all(servers.map(async (server): Promise<Oas3> => {
         console.log(`Getting oas: ${server.name} = ${server.url}`);
         let reply = await got(server.url).json();
 
         return reply as Oas3;
     }));
 
-    console.log(`oas IS = `, schemas);
+    console.log(`oas IS = `, oasSchemas);
 
-    let gqlServerDef = await OtG.createGraphQLSchema(schemas);
+    let gqlServerDef = await OtG.createGraphQLSchema(oasSchemas);
     const { schema } = gqlServerDef;
+
+    // console.log('GQL = ', printSchema(schema));
+    // var abc = introspectionFromSchema(schema);
+    // console.log('Introspection = ', abc);
+    // const def = schema.getTypeMap();
+
+    // console.log('typemap = ', def);
+    // const ghi = makeExecutableSchema({typeDefs: printSchema(schema), resolvers: def})
 
     const server = new ApolloServer({ schema });
 
     //https://www.apollographql.com/blog/three-ways-to-represent-your-graphql-schema-a41f4175100d/
+    //https://github.com/apollographql/apollo-server/pull/4310
+    // https://github.com/0xR/graphql-transform-federation
     // const serverFederated = new ApolloServer({
     //     schema: buildFederatedSchema([{ typeDefs, resolvers }]),
     // });

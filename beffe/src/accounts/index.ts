@@ -154,15 +154,6 @@ const resolvers = {
   },
 };
 
-// const server = new ApolloServer({
-//   schema: buildFederatedSchema([{ typeDefs, resolvers }]),
-// });
-
-// server.listen({ port }).then(({ url }) => {
-//   console.log(`Accounts service ready at ${url}`);
-// });
-
-
 
 export const cliCommand = {
   command: 'accounts [port]',
