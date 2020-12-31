@@ -57,7 +57,7 @@ interface IOasServerConf {
 function builder(yargs: yargs.Argv<{}>) {
     // console.log('gatewayCLI called with ',yargs);
     return yargs
-        .env('OAS2')
+        .env('OAS')
         .option('path', {
             default: '/graphql',
             describe: 'Path to serve GraphQL'

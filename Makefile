@@ -11,14 +11,14 @@ ${BENAME}-build:
 	cd be; docker build -t ${BENAME} .
 
 ${BENAME}-shell: ${BENAME}-build
-	docker run -it --env BASE_PATH=${BASE_PATH} ${BENAME} /bin/bash
+	docker run --rm -it --env BASE_PATH=${BASE_PATH} ${BENAME} /bin/bash
 
 ${BENAME}-devshell:
 	cd be; docker build -t ${BENAME}-devshell --target BUILD .
-	docker run -it --env BASE_PATH=${BASE_PATH} --mount type=bind,source=${CURDIR}/be/be,target=/home/work/be --mount type=bind,source=${CURDIR}/be/tests,target=/home/work/tests --mount type=bind,source=${CURDIR}/be/static,target=/home/work/static -p 8081:8080 ${BENAME}-devshell /bin/bash
+	docker run --rm -it --env BASE_PATH=${BASE_PATH} --mount type=bind,source=${CURDIR}/be/be,target=/home/work/be --mount type=bind,source=${CURDIR}/be/tests,target=/home/work/tests --mount type=bind,source=${CURDIR}/be/static,target=/home/work/static -p 8081:8080 ${BENAME}-devshell /bin/bash
 
 ${BENAME}-run: ${BENAME}-build
-	docker run -it --env BASE_PATH=${BASE_PATH} -p 80:8080 ${BENAME}
+	docker run --rm -it --env BASE_PATH=${BASE_PATH} -p 80:8080 ${BENAME}
 
 ${BENAME}-publish: ${BENAME}-build
 	docker tag ${BENAME} ${REGISTRY}/${BENAME}
@@ -34,11 +34,11 @@ ${BEFFENAME}-shell: ${BEFFENAME}-build
 
 ${BEFFENAME}-devshell:
 	cd beffe; docker build -t ${BEFFENAME}-devshell --target BUILDENV .
-	docker run -it --env BASE_HREF=${BASE_HREF} --mount type=bind,source=${CURDIR}/beffe/package.json,target=/home/node/package.json --mount type=bind,source=${CURDIR}/beffe/src,target=/home/node/src -p 4000:4000 ${BEFFENAME}-devshell /bin/bash
+	docker run --rm -it --env BASE_HREF=${BASE_HREF} --mount type=bind,source=${CURDIR}/beffe/package.json,target=/home/node/package.json --mount type=bind,source=${CURDIR}/beffe/src,target=/home/node/src -p 4000:4000 ${BEFFENAME}-devshell /bin/bash
 
 
 ${BEFFENAME}-run: ${BEFFENAME}-build
-	docker run -it --env BASE_HREF=${BASE_HREF} -p 80:4000 ${BEFFENAME}
+	docker run --rm -it --env BASE_HREF=${BASE_HREF} -p 80:4000 ${BEFFENAME}
 
 ${BEFFENAME}-publish: ${BEFFENAME}-build
 	docker tag ${BEFFENAME} ${REGISTRY}/${BEFFENAME}
@@ -49,14 +49,14 @@ ${UINAME}-build:
 	cd ui; docker build -t ${UINAME} .
 
 ${UINAME}-shell: ${UINAME}-build
-	docker run -it --env BASE_HREF=${BASE_HREF} ${UINAME} /bin/bash
+	docker run --rm -it --env BASE_HREF=${BASE_HREF} ${UINAME} /bin/bash
 
 ${UINAME}-devshell:
 	cd ui; docker build -t ${UINAME}-devshell --target BUILD .
-	docker run -it --env BASE_HREF=${BASE_HREF} ${UINAME}-devshell /bin/bash
+	docker run --rm -it --env BASE_HREF=${BASE_HREF} ${UINAME}-devshell /bin/bash
 
 ${UINAME}-run: ${UINAME}-build
-	docker run -it --env BASE_HREF=${BASE_HREF} -p 80:80 ${UINAME}
+	docker run --rm -it --env BASE_HREF=${BASE_HREF} -p 80:80 ${UINAME}
 
 ${UINAME}-publish: ${UINAME}-build
 	docker tag ${UINAME} ${REGISTRY}/${UINAME}

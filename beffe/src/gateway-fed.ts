@@ -25,7 +25,7 @@ interface IGatewayFedConf {
 function builder(yargs: yargs.Argv<{}>) {
   // console.log('gatewayCLI called with ',yargs);
   return yargs
-    .env('GATEWAY')
+    .env('FED')
     .option('path', {
       default: '/graphql',
       describe: 'Path to serve GraphQL'

@@ -23,7 +23,7 @@ interface IGatewayStitchConf {
 function builder(yargs: yargs.Argv<{}>) {
     // console.log('gatewayCLI called with ',yargs);
     return yargs
-        .env('GATEWAY')
+        .env('STITCH')
         .option('path', {
             default: '/graphql',
             describe: 'Path to serve GraphQL'
