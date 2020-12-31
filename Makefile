@@ -52,8 +52,8 @@ ${UINAME}-shell: ${UINAME}-build
 	docker run --rm -it --env BASE_HREF=${BASE_HREF} ${UINAME} /bin/bash
 
 ${UINAME}-devshell:
-	cd ui; docker build -t ${UINAME}-devshell --target BUILD .
-	docker run --rm -it --env BASE_HREF=${BASE_HREF} ${UINAME}-devshell /bin/bash
+	cd ui; docker build -t ${UINAME}-devshell --target BUILDENV .
+	docker run --rm -it --env BASE_HREF=${BASE_HREF} --mount type=bind,source=${CURDIR}/ui/package.json,target=/home/node/package.json --mount type=bind,source=${CURDIR}/ui/src,target=/home/node/src --mount type=bind,source=${CURDIR}/ui/e2e,target=/home/node/e2e -p 3200:3200 ${UINAME}-devshell /bin/bash
 
 ${UINAME}-run: ${UINAME}-build
 	docker run --rm -it --env BASE_HREF=${BASE_HREF} -p 80:80 ${UINAME}

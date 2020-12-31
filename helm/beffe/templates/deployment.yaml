@@ -30,7 +30,11 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           env:
-          - name: GATEWAY_PATH
+          - name: STITCH_FILE
+            value: "/beffe/config/stitch.yaml"
+          - name: OAS_FILE
+            value: "/beffe/config/oas.yaml"
+          - name: STITCH_PATH
             value: {{ default "/" .Values.gatewayPath }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -50,6 +54,13 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /beffe/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "beffe.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

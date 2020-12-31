@@ -1,14 +1,17 @@
-FROM node:14 as BUILD
+FROM node:14 as BUILDENV
 
 WORKDIR /home/node
 
 RUN npm install -g @angular/cli
 
-COPY package.json .
+COPY package*.json ./
 
 RUN npm install
 
-COPY angular.json karma.conf.js tsconfig.* tslint.*  ./
+COPY angular.json karma.conf.js tsconfig.* tslint.* proxy-config.js  ./
+
+FROM BUILDENV as BUILD
+
 COPY e2e/ e2e/
 COPY src/ src/
 

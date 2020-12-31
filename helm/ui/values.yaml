@@ -52,7 +52,7 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-baseHref: "/backend/poo"
+baseHref: "/ui"
 
 autoscaling:
   enabled: false

@@ -1,0 +1,6 @@
+---
+servers:
+  - name: be
+    url: http://mybe/be/oas/spec
+  # - name: sam1
+  #   url: http://127.0.0.1:4001

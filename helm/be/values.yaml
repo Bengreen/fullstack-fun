@@ -52,7 +52,7 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-basePath: "/backend/cho"
+basePath: "/be"
 
 autoscaling:
   enabled: false

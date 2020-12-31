@@ -52,7 +52,10 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-gatewayPath: "/backend/doo/graphql"
+gatewayPath: "/beffe/graphql"
+
+
+
 
 autoscaling:
   enabled: false

@@ -28,13 +28,13 @@ ingress:
   hosts:
     - host: simple.k8s
       paths:
-        - path: "/backend/poo"
+        - path: "/ui"
           service: myui
           port: 80
-        - path: "/backend/doo"
+        - path: "/beffe"
           service: mybeffe
           port: 80
-        - path: "/backend/cho"
+        - path: "/be"
           service: mybe
           port: 80
   tls: []
