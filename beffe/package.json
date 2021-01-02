@@ -7,7 +7,7 @@
     "ts-run": "ts-node ./src/index.ts",
     "build": "tsc",
     "prod-start": "node ./dist/index.js gateway",
-    "start": "npm run server-server",
+    "start": "npm run server",
     "unusedserver:gateway-fed": "wait-on tcp:4001 && node dist/index.js gateway -f example-config.yaml",
     "devserver": "npm run build && concurrently npm:devserver-build npm:devserver-serve",
     "devserver-build": "npm run build -- -w",

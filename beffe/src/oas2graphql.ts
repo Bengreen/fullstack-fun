@@ -46,7 +46,8 @@ const resolvers = {
 
 interface IOasServer {
     name: string,
-    url: string
+    url: string,
+    baseUrl: string
 }
 
 interface IOasServerConf {
@@ -108,7 +109,8 @@ async function startOas2graphql(
 
     console.log(`oas IS = `, oasSchemas);
 
-    let gqlServerDef = await OtG.createGraphQLSchema(oasSchemas);
+    let gqlServerDef = await OtG.createGraphQLSchema(oasSchemas, { baseUrl: servers[0].baseUrl });
+    // ToDo: Move specification of the server url into the oas spec itself and not have to override here
     const { schema } = gqlServerDef;
 
     // console.log('GQL = ', printSchema(schema));

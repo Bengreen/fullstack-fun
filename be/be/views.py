@@ -25,6 +25,7 @@ class ArticleView(PydanticView):
     #     return web.json_response({'name': article.name,
     #                               'number_of_page': article.nb_page})
 
-    async def get(self, with_comments: Optional[bool]) -> r200[Comments]:
-        return web.json_response({'with_comments': with_comments})
+    async def get(self, with_comments: Optional[bool]) -> r200[ArticleModel]:
+        return web.json_response({'name': 'Blobby',
+                                   'number_of_page': 12})
 

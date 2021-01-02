@@ -2,5 +2,6 @@
 servers:
   - name: be
     url: http://mybe/be/oas/spec
+    baseUrl: http://mybe
   # - name: sam1
   #   url: http://127.0.0.1:4001
